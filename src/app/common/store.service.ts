@@ -17,7 +17,7 @@ export class Store {
 
     courses$: Observable<Course[]> = this.subject.asObservable();
 
-
+    // * LOADING INITIAL DATA
     init() {
 
         const http$ = createHttpObservable('/api/courses');
@@ -31,6 +31,7 @@ export class Store {
                 courses => this.subject.next(courses)
             );
     }
+    // * ===
 
     selectBeginnerCourses() {
         return this.filterByCategory('BEGINNER');
@@ -44,11 +45,12 @@ export class Store {
         return this.courses$
             .pipe(
                 map(courses => courses.find(course => course.id == courseId)),
-                filter(course => !!course)
+                filter(course => !!course) // ? to ignore initial empty in behaviorSubject
 
             );
     }
 
+    // * SELECTOR METHODS
     filterByCategory(category: string) {
         return this.courses$
             .pipe(
@@ -56,7 +58,9 @@ export class Store {
                     .filter(course => course.category == category))
             );
     }
+    // * ===
 
+    // * DATA MODIFICATION
     saveCourse(courseId:number, changes): Observable<any> {
 
         const courses = this.subject.getValue();
@@ -81,6 +85,7 @@ export class Store {
         }));
 
     }
+    // * ===
 
 
 
